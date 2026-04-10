@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SimplyDoors Master Quoting App</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>SimplyDoors Widget</title>
     <style>
         :root {
             --primary: #0f766e; 
@@ -34,13 +36,13 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Top Navigation Tabs */
+        /* Top Navigation Tabs - Widget Adjusted */
         .top-nav {
             width: 100%;
             background: #1e293b;
             display: flex;
             justify-content: center;
-            padding: 1rem 1rem 0 1rem;
+            padding: 0.5rem 0.5rem 0 0.5rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
@@ -51,32 +53,25 @@
             background: #334155;
             color: #94a3b8;
             border: none;
-            padding: 0.875rem 1rem;
-            font-size: 0.95rem;
+            padding: 0.75rem 0.25rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
-            border-radius: 8px 8px 0 0;
-            margin: 0 0.2rem;
+            border-radius: 6px 6px 0 0;
+            margin: 0 0.1rem;
             transition: all 0.2s;
             flex: 1;
-            max-width: 250px;
+            max-width: 150px;
         }
 
-        .tab-btn:hover {
-            background: #475569;
-            color: white;
-        }
+        .tab-btn:hover { background: #475569; color: white; }
+        .tab-btn.active { background: var(--bg); color: var(--primary); }
 
-        .tab-btn.active {
-            background: var(--bg);
-            color: var(--primary);
-        }
-
-        /* View Containers */
+        /* View Containers - Locked to Widget Width */
         .view-section {
             display: none;
             width: 100%;
-            padding: 2rem 1rem;
+            padding: 1rem 0.5rem;
             justify-content: center;
         }
 
@@ -85,27 +80,27 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 450px; /* Locked narrow widget width */
             width: 100%;
             display: grid;
-            grid-template-columns: 1.2fr 350px;
-            gap: 2rem;
+            grid-template-columns: 1fr; /* Single column forced */
+            gap: 1rem;
             align-items: start;
         }
 
         .panel {
             background: var(--panel-bg);
-            padding: 2rem;
+            padding: 1.5rem 1rem;
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
         h2 {
-            font-size: 1.25rem;
-            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            margin-bottom: 1.25rem;
             color: var(--text-main);
             border-bottom: 2px solid var(--bg);
-            padding-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -115,32 +110,29 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
             border-bottom: 1px solid var(--border);
         }
 
-        .app-header h1 {
-            font-size: 1.5rem;
-            color: var(--text-main);
-        }
+        .app-header h1 { font-size: 1.25rem; color: var(--text-main); }
 
-        .form-group { margin-bottom: 1.25rem; position: relative; }
+        .form-group { margin-bottom: 1rem; position: relative; }
 
         label {
             display: block;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             color: var(--text-main);
         }
 
         input[type="number"], input[type="text"], select {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.6rem;
             border: 1px solid var(--border);
             border-radius: 6px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: border-color 0.2s, box-shadow 0.2s;
             background: #fff;
         }
@@ -152,19 +144,19 @@
         }
 
         .input-wrapper { position: relative; display: flex; align-items: center; }
-        .prefix, .suffix { position: absolute; color: var(--text-muted); font-weight: 600; padding: 0 0.75rem; pointer-events: none; }
+        .prefix, .suffix { position: absolute; color: var(--text-muted); font-weight: 600; padding: 0 0.5rem; pointer-events: none; font-size: 0.9rem;}
         .prefix { left: 0; }
         .suffix { right: 0; }
-        .input-wrapper.has-prefix input { padding-left: 1.75rem; }
-        .input-wrapper.has-suffix input { padding-right: 2.5rem; }
+        .input-wrapper.has-prefix input { padding-left: 1.5rem; }
+        .input-wrapper.has-suffix input { padding-right: 2rem; }
 
         .btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 0.8rem;
             border-radius: 6px;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
@@ -175,7 +167,7 @@
         }
 
         .btn:hover { background: var(--primary-hover); }
-        .btn-full { width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1rem;}
+        .btn-full { width: 100%; margin-top: 1rem; padding: 0.8rem; font-size: 0.95rem;}
         
         .btn-push-margin { background: #0f766e; color: #fff; }
         .btn-push-margin:hover { background: #0d9488; }
@@ -183,32 +175,27 @@
         .btn-push-multi { background: #8b5cf6; color: #fff; }
         .btn-push-multi:hover { background: #7c3aed; }
 
-        .btn-danger {
-            background: transparent;
-            color: var(--danger);
-            padding: 0.25rem 0.5rem;
-            font-size: 1.25rem;
-            line-height: 1;
-            border-radius: 6px;
-        }
+        .btn-danger { background: transparent; color: var(--danger); padding: 0.25rem; font-size: 1.2rem; line-height: 1; border-radius: 6px; }
         .btn-danger:hover { background: #fee2e2; }
 
-        .btn-clear { background: transparent; color: var(--text-muted); font-size: 0.875rem; padding: 0; }
+        .btn-clear { background: transparent; color: var(--text-muted); font-size: 0.75rem; padding: 0; }
         .btn-clear:hover { color: var(--danger); text-decoration: underline; }
 
         /* MEASUREMENT TAB SPECIFICS */
         .measurement-row {
             display: grid;
-            grid-template-columns: 1fr 1fr 1.5fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
             align-items: center;
         }
+        
+        .measurement-row .fraction-group { grid-column: 1 / -1; }
 
         .divider {
             height: 1px;
             background: var(--border);
-            margin: 2rem 0;
+            margin: 1.5rem 0;
             position: relative;
         }
 
@@ -221,27 +208,20 @@
             background: var(--panel-bg);
             padding: 0 10px;
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
         }
 
-        .division-box {
-            background: #f8fafc;
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            margin-top: 1.5rem;
-        }
+        .division-box { background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid var(--border); margin-top: 1rem; }
+        .result-display { font-size: 1.1rem; font-weight: bold; color: var(--primary); margin-top: 0.25rem; text-align: right;}
+        .result-sub { font-size: 0.8rem; color: var(--text-muted); }
 
-        .result-display { font-size: 1.25rem; font-weight: bold; color: var(--primary); margin-top: 0.5rem; }
-        .result-sub { font-size: 0.875rem; color: var(--text-muted); }
-
-        .tally-list { display: flex; flex-direction: column; gap: 0.75rem; max-height: 400px; overflow-y: auto; margin-bottom: 1.5rem; }
-        .tally-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; }
+        .tally-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 300px; overflow-y: auto; margin-bottom: 1rem; }
+        .tally-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border); font-size: 0.85rem; }
         .tally-desc { font-weight: 600; color: var(--text-main); }
-        .tally-val { color: var(--text-muted); font-size: 0.8rem; }
+        .tally-val { color: var(--text-muted); font-size: 0.75rem; }
 
-        .push-action-row { display: flex; gap: 1rem; margin-top: 1rem; }
+        .push-action-row { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
 
         /* PRICING TABS SPECIFICS */
         .toggle-container {
@@ -249,74 +229,58 @@
             align-items: center;
             justify-content: space-between;
             background: #f8fafc;
-            padding: 1rem;
+            padding: 0.75rem;
             border-radius: 8px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             border: 1px solid var(--border);
         }
 
-        .switch { position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0; }
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; flex-shrink: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .3s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .3s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(22px); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
         .custom-expense-row {
             display: grid;
-            grid-template-columns: 2fr 1.5fr auto auto;
-            gap: 0.75rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
             align-items: center;
             background: #f8fafc;
-            padding: 0.75rem 0.75rem 0.5rem 0.75rem;
+            padding: 0.75rem;
             border-radius: 8px;
             border: 1px solid var(--border);
             margin-bottom: 0.75rem;
         }
 
-        .custom-expense-row input { padding: 0.6rem; font-size: 0.95rem; }
-        .mini-toggle-wrap { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); gap: 4px; }
+        .custom-expense-row input.expense-name { grid-column: span 2; }
+        .mini-toggle-wrap { justify-self: center; display: flex; flex-direction: column; align-items: center; font-size: 0.65rem; font-weight: 600; color: var(--text-muted); gap: 4px; }
         
-        .item-summary { grid-column: 1 / -1; font-size: 0.8rem; color: var(--text-muted); text-align: right; padding-top: 0.5rem; border-top: 1px dashed var(--border); font-weight: 500; }
-        .base-summary { font-size: 0.8rem; color: var(--text-muted); text-align: right; padding-top: 0.5rem; font-weight: 500; }
+        .item-summary { grid-column: 1 / -1; font-size: 0.75rem; color: var(--text-muted); text-align: center; padding-top: 0.5rem; border-top: 1px dashed var(--border); font-weight: 500; }
+        .base-summary { font-size: 0.75rem; color: var(--text-muted); text-align: right; padding-top: 0.25rem; font-weight: 500; }
 
-        /* Shared Side Panels */
-        .summary { background: var(--text-main); color: white; position: sticky; top: 5.5rem; }
+        /* Shared Side Panels - Stacked for Widget */
+        .summary { background: var(--text-main); color: white; position: static; margin-bottom: 2rem; }
         .summary h2 { color: white; border-color: rgba(255,255,255,0.1); }
         
-        .summary-total { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 1.25rem; font-weight: 700; color: var(--success); display: flex; flex-direction: column; gap: 0.5rem; }
-        .summary-total span { font-size: 0.9rem; color: #cbd5e1; font-weight: normal; }
+        .summary-total { margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 1.1rem; font-weight: 700; color: var(--success); display: flex; flex-direction: column; gap: 0.25rem; }
+        .summary-total span { font-size: 0.8rem; color: #cbd5e1; font-weight: normal; }
 
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1rem; color: #cbd5e1; }
-        .summary-row.total { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 1.5rem; font-weight: 700; color: white; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.95rem; color: #cbd5e1; }
+        .summary-row.total { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 1.25rem; font-weight: 700; color: white; }
         .summary-row.profit { color: var(--success); font-weight: 600; }
         .tax-disabled { text-decoration: line-through; opacity: 0.5; }
-        .btn-copy { width: 100%; margin-top: 1.5rem; padding: 0.875rem; background: #334155; font-size: 1rem; }
+        .btn-copy { width: 100%; margin-top: 1.25rem; padding: 0.75rem; background: #334155; font-size: 0.95rem; }
         .btn-copy:hover { background: #475569; }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; gap: 1rem; }
-            .measurement-row { grid-template-columns: 1fr 1fr; }
-            .measurement-row .fraction-group { grid-column: 1 / -1; }
-            .custom-expense-row { grid-template-columns: 1fr 1fr; }
-            .custom-expense-row input.expense-name { grid-column: span 2; }
-            .mini-toggle-wrap { justify-self: center; }
-            .btn-danger { justify-self: end; }
-            .item-summary { text-align: center; }
-            .summary { position: static; margin-bottom: 2rem; }
-            .top-nav { padding: 0.5rem 0.5rem 0 0.5rem; }
-            .tab-btn { padding: 0.6rem 0.25rem; font-size: 0.8rem; }
-            .push-action-row { flex-direction: column; gap: 0.5rem; }
-        }
     </style>
 </head>
 <body>
 
 <nav class="top-nav">
-    <button id="tabBtnMeas" class="tab-btn active" onclick="switchTab('meas')">📏 Measurements</button>
-    <button id="tabBtnMargin" class="tab-btn" onclick="switchTab('margin')">💰 Margin (Cost)</button>
-    <button id="tabBtnMulti" class="tab-btn" onclick="switchTab('multi')">✖️ Multiplier (Retail)</button>
+    <button id="tabBtnMeas" class="tab-btn active" onclick="switchTab('meas')">📏 Measure</button>
+    <button id="tabBtnMargin" class="tab-btn" onclick="switchTab('margin')">💰 Margin</button>
+    <button id="tabBtnMulti" class="tab-btn" onclick="switchTab('multi')">✖️ Multiplier</button>
 </nav>
 
 <div id="viewMeas" class="view-section active">
@@ -327,19 +291,15 @@
                 <button class="btn btn-clear" onclick="resetMeasApp()">Clear Meas.</button>
             </div>
 
-            <label>Enter Feet & Inches (Tape Measure)</label>
+            <label>Feet & Inches (Tape Measure)</label>
             <div class="measurement-row">
-                <div>
-                    <div class="input-wrapper has-suffix">
-                        <input type="number" id="inputFeet" min="0" placeholder="0" oninput="calcFromFeet()">
-                        <span class="suffix">ft</span>
-                    </div>
+                <div class="input-wrapper has-suffix">
+                    <input type="number" id="inputFeet" min="0" placeholder="0" oninput="calcFromFeet()">
+                    <span class="suffix">ft</span>
                 </div>
-                <div>
-                    <div class="input-wrapper has-suffix">
-                        <input type="number" id="inputInches" min="0" max="11" placeholder="0" oninput="calcFromFeet()">
-                        <span class="suffix">in</span>
-                    </div>
+                <div class="input-wrapper has-suffix">
+                    <input type="number" id="inputInches" min="0" max="11" placeholder="0" oninput="calcFromFeet()">
+                    <span class="suffix">in</span>
                 </div>
                 <div class="fraction-group">
                     <select id="inputFraction" onchange="calcFromFeet()">
@@ -373,19 +333,19 @@
                 </div>
             </div>
 
-            <div class="form-group" style="margin-top: 1.5rem;">
+            <div class="form-group" style="margin-top: 1.25rem;">
                 <div class="input-wrapper">
-                    <input type="text" id="tallyDesc" placeholder="Description (e.g., Baseboard A214)">
+                    <input type="text" id="tallyDesc" placeholder="Description (e.g., Baseboard)">
                 </div>
-                <button class="btn btn-full" onclick="addToTally()" style="margin-top: 0.5rem;">+ Add to Project Tally</button>
+                <button class="btn btn-full" onclick="addToTally()" style="margin-top: 0.5rem;">+ Add to Tally</button>
             </div>
 
             <div class="division-box">
-                <label>Division Tool (Split Measurement)</label>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: center;">
+                <label>Division Tool</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; align-items: center;">
                     <div class="input-wrapper has-suffix">
                         <input type="number" id="divideBy" step="1" min="1" placeholder="Div. by..." oninput="calculateDivision()">
-                        <span class="suffix">parts</span>
+                        <span class="suffix">pts</span>
                     </div>
                     <div id="divisionResult" class="result-display">
                         0.00"
@@ -397,16 +357,15 @@
 
         <div class="panel summary">
             <h2>Project Tally</h2>
-            <div class="tally-list" id="tallyList">
-                </div>
+            <div class="tally-list" id="tallyList"></div>
             <div class="summary-total">
                 <div id="grandTotalDecimal">0.00" Total</div>
                 <span id="grandTotalFeet">0' 0" Linear</span>
             </div>
             
             <div class="push-action-row">
-                <button class="btn btn-full btn-push-margin" onclick="pushToMargin()">Push to Margin Quote</button>
-                <button class="btn btn-full btn-push-multi" onclick="pushToMulti()">Push to Multiplier Quote</button>
+                <button class="btn btn-full btn-push-margin" onclick="pushToMargin()">Push to Margin</button>
+                <button class="btn btn-full btn-push-multi" onclick="pushToMulti()">Push to Multiplier</button>
             </div>
         </div>
     </div>
@@ -416,12 +375,12 @@
     <div class="container">
         <div class="panel">
             <div class="app-header">
-                <h1>Margin Calculator</h1>
+                <h1>Margin Price</h1>
                 <button class="btn btn-clear" onclick="resetMarginApp()">Clear Pricing</button>
             </div>
             
             <div class="form-group">
-                <label>Base Item Cost (e.g. Door Unit)</label>
+                <label>Base Item Cost</label>
                 <div class="input-wrapper has-prefix">
                     <span class="prefix">$</span>
                     <input type="number" id="baseCost" step="0.01" min="0" placeholder="0.00" inputmode="decimal" oninput="calculateMargin()">
@@ -439,8 +398,8 @@
 
             <div class="toggle-container">
                 <div>
-                    <label style="margin:0;">Master Tax Settings</label>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Toggle to exempt entire quote</div>
+                    <label style="margin:0; font-size: 0.8rem;">Master Tax</label>
+                    <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Toggle entire quote</div>
                 </div>
                 <label class="switch">
                     <input type="checkbox" id="masterTaxToggle" checked onchange="calculateMargin()">
@@ -456,13 +415,12 @@
                 </div>
             </div>
 
-            <h2 style="margin-top: 2.5rem;">
-                Line Items & Materials
-                <button class="btn" onclick="addMarginExpense()">+ Add Custom</button>
+            <h2 style="margin-top: 2rem;">
+                Line Items
+                <button class="btn" onclick="addMarginExpense()">+ Add</button>
             </h2>
             
-            <div id="marginExpensesContainer">
-                </div>
+            <div id="marginExpensesContainer"></div>
         </div>
 
         <div class="panel summary">
@@ -480,11 +438,11 @@
                 <span id="displayTax">$0.00</span>
             </div>
             <div class="summary-row total">
-                <span>Final Selling Price</span>
+                <span>Final Price</span>
                 <span id="displaySellingPrice">$0.00</span>
             </div>
             <button class="btn btn-copy" id="copyBtnMargin" onclick="copyToClipboard('margin')">
-                📋 Copy Quote Details
+                📋 Copy Details
             </button>
         </div>
     </div>
@@ -494,7 +452,7 @@
     <div class="container">
         <div class="panel">
             <div class="app-header">
-                <h1>Multiplier Calculator</h1>
+                <h1>Multiplier Price</h1>
                 <button class="btn btn-clear" onclick="resetMultiApp()">Clear Pricing</button>
             </div>
             
@@ -508,7 +466,7 @@
             </div>
 
             <div class="form-group">
-                <label>Retail Multiplier (e.g. 1.5, 2.0)</label>
+                <label>Retail Multiplier</label>
                 <div class="input-wrapper has-suffix">
                     <input type="number" id="multiMultiplier" step="0.01" min="0" placeholder="1.0" inputmode="decimal" oninput="calculateMulti()">
                     <span class="suffix">x</span>
@@ -517,8 +475,8 @@
 
             <div class="toggle-container">
                 <div>
-                    <label style="margin:0;">Master Tax Settings</label>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Toggle to exempt entire quote</div>
+                    <label style="margin:0; font-size: 0.8rem;">Master Tax</label>
+                    <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Toggle entire quote</div>
                 </div>
                 <label class="switch">
                     <input type="checkbox" id="multiMasterTaxToggle" checked onchange="calculateMulti()">
@@ -534,13 +492,12 @@
                 </div>
             </div>
 
-            <h2 style="margin-top: 2.5rem;">
-                Line Items & Materials
-                <button class="btn" style="background-color: #8b5cf6;" onclick="addMultiExpense()">+ Add Custom</button>
+            <h2 style="margin-top: 2rem;">
+                Line Items
+                <button class="btn" style="background-color: #8b5cf6;" onclick="addMultiExpense()">+ Add</button>
             </h2>
             
-            <div id="multiExpensesContainer">
-                </div>
+            <div id="multiExpensesContainer"></div>
         </div>
 
         <div class="panel summary">
@@ -558,11 +515,11 @@
                 <span id="multiTax">$0.00</span>
             </div>
             <div class="summary-row total">
-                <span>Final Selling Price</span>
+                <span>Final Price</span>
                 <span id="multiSellingPrice">$0.00</span>
             </div>
             <button class="btn btn-copy" id="copyBtnMulti" onclick="copyToClipboard('multi')">
-                📋 Copy Quote Details
+                📋 Copy Details
             </button>
         </div>
     </div>
@@ -603,7 +560,6 @@
     // --- INTEGRATION WORKFLOW (THE PUSHES) ---
     function pushToMargin() {
         if(projectTally.length === 0) { alert("Your Project Tally is empty! Add some measurements first."); return; }
-
         projectTally.forEach(item => {
             const alreadyExists = marginExpenses.find(exp => exp.tallyId === item.id);
             if(!alreadyExists) {
@@ -625,7 +581,6 @@
 
     function pushToMulti() {
         if(projectTally.length === 0) { alert("Your Project Tally is empty! Add some measurements first."); return; }
-
         projectTally.forEach(item => {
             const alreadyExists = multiExpenses.find(exp => exp.tallyId === item.id);
             if(!alreadyExists) {
@@ -716,7 +671,6 @@
     function addToTally() {
         const totalInches = parseFloat(document.getElementById('inputTotalInches').value);
         if (!totalInches || totalInches <= 0) return;
-
         let desc = document.getElementById('tallyDesc').value.trim();
         if (desc === "") desc = `Measurement ${projectTally.length + 1}`;
 
@@ -757,15 +711,12 @@
             `;
             list.appendChild(div);
         });
-
         document.getElementById('grandTotalDecimal').innerText = sumInches.toFixed(2) + '" Total';
         document.getElementById('grandTotalFeet').innerText = convertDecimalToFeetText(sumInches) + " Linear";
     }
 
     function resetMeasApp() {
-        if(confirm('Clear measurements and project tally?')) {
-            projectTally = []; renderTally(); saveState();
-        }
+        if(confirm('Clear measurements and project tally?')) { projectTally = []; renderTally(); saveState(); }
     }
 
     // ==========================================
@@ -801,10 +752,10 @@
                     <input type="number" placeholder="Cost" class="expense-amount" step="0.01" min="0" inputmode="decimal" value="${exp.amount}" oninput="updateMarginExpense('${exp.id}', 'amount', this.value)">
                 </div>
                 <div class="mini-toggle-wrap">
-                    <span>Taxable?</span>
-                    <label class="switch" style="width: 34px; height: 18px;">
+                    <span>Tax?</span>
+                    <label class="switch">
                         <input type="checkbox" class="expense-taxable" ${exp.isTaxable ? 'checked' : ''} onchange="updateMarginExpense('${exp.id}', 'isTaxable', this.checked)">
-                        <span class="slider" style="border-radius: 18px;"></span>
+                        <span class="slider"></span>
                     </label>
                 </div>
                 <button class="btn btn-danger" onclick="removeMarginExpense('${exp.id}')">&times;</button>
@@ -833,7 +784,7 @@
 
         const basePreTax = baseCost * marginMultiplier;
         const baseTaxAmount = isMasterTaxOn ? (basePreTax * (taxRate / 100)) : 0;
-        document.getElementById('baseCostSummary').innerText = baseCost > 0 ? `Selling Price: ${formatMoney(basePreTax)} (Pre-tax) | ${formatMoney(basePreTax + baseTaxAmount)} (w/ Tax)` : '';
+        document.getElementById('baseCostSummary').innerText = baseCost > 0 ? `Price: ${formatMoney(basePreTax)} | ${formatMoney(basePreTax + baseTaxAmount)} (Tax)` : '';
 
         let totalCustomCost = 0; let taxableCustomCost = 0;
 
@@ -846,13 +797,12 @@
             const itemTaxAmount = (isMasterTaxOn && exp.isTaxable) ? (itemPreTax * (taxRate / 100)) : 0;
             const summaryDiv = document.getElementById(`margin-summary-${exp.id}`);
             if (summaryDiv) {
-                summaryDiv.innerText = amount > 0 ? `Selling Price: ${formatMoney(itemPreTax)} (Pre-tax) | ${formatMoney(itemPreTax + itemTaxAmount)} (w/ Tax)` : `Cost required for selling price`;
+                summaryDiv.innerText = amount > 0 ? `Price: ${formatMoney(itemPreTax)} | ${formatMoney(itemPreTax + itemTaxAmount)} (Tax)` : `Cost req.`;
             }
         });
 
         const totalCost = baseCost + totalCustomCost;
         const totalTaxableCost = isMasterTaxOn ? (baseCost + taxableCustomCost) : 0;
-        
         const preTaxSellingPrice = totalCost * marginMultiplier;
         const grossProfit = preTaxSellingPrice - totalCost;
         const taxableSellingPrice = totalTaxableCost * marginMultiplier;
@@ -909,10 +859,10 @@
                     <input type="number" placeholder="Cost" class="expense-amount" step="0.01" min="0" inputmode="decimal" value="${exp.amount}" oninput="updateMultiExpense('${exp.id}', 'amount', this.value)">
                 </div>
                 <div class="mini-toggle-wrap">
-                    <span>Taxable?</span>
-                    <label class="switch" style="width: 34px; height: 18px;">
+                    <span>Tax?</span>
+                    <label class="switch">
                         <input type="checkbox" class="expense-taxable" ${exp.isTaxable ? 'checked' : ''} onchange="updateMultiExpense('${exp.id}', 'isTaxable', this.checked)">
-                        <span class="slider" style="border-radius: 18px;"></span>
+                        <span class="slider"></span>
                     </label>
                 </div>
                 <button class="btn btn-danger" onclick="removeMultiExpense('${exp.id}')">&times;</button>
@@ -924,7 +874,7 @@
 
     function calculateMulti() {
         const baseCost = parseFloat(document.getElementById('multiBaseCost').value) || 0;
-        const multiplier = parseFloat(document.getElementById('multiMultiplier').value) || 1; // Default to 1.0 multiplier
+        const multiplier = parseFloat(document.getElementById('multiMultiplier').value) || 1;
         const taxRate = parseFloat(document.getElementById('multiTaxRate').value) || 0;
         const isMasterTaxOn = document.getElementById('multiMasterTaxToggle').checked;
 
@@ -938,7 +888,7 @@
 
         const basePreTax = baseCost * multiplier;
         const baseTaxAmount = isMasterTaxOn ? (basePreTax * (taxRate / 100)) : 0;
-        document.getElementById('multiBaseCostSummary').innerText = baseCost > 0 ? `Selling Price: ${formatMoney(basePreTax)} (Pre-tax) | ${formatMoney(basePreTax + baseTaxAmount)} (w/ Tax)` : '';
+        document.getElementById('multiBaseCostSummary').innerText = baseCost > 0 ? `Price: ${formatMoney(basePreTax)} | ${formatMoney(basePreTax + baseTaxAmount)} (Tax)` : '';
 
         let totalCustomCost = 0; let taxableCustomCost = 0;
 
@@ -951,13 +901,12 @@
             const itemTaxAmount = (isMasterTaxOn && exp.isTaxable) ? (itemPreTax * (taxRate / 100)) : 0;
             const summaryDiv = document.getElementById(`multi-summary-${exp.id}`);
             if (summaryDiv) {
-                summaryDiv.innerText = amount > 0 ? `Selling Price: ${formatMoney(itemPreTax)} (Pre-tax) | ${formatMoney(itemPreTax + itemTaxAmount)} (w/ Tax)` : `Cost required for selling price`;
+                summaryDiv.innerText = amount > 0 ? `Price: ${formatMoney(itemPreTax)} | ${formatMoney(itemPreTax + itemTaxAmount)} (Tax)` : `Cost req.`;
             }
         });
 
         const totalCost = baseCost + totalCustomCost;
         const totalTaxableCost = isMasterTaxOn ? (baseCost + taxableCustomCost) : 0;
-        
         const preTaxSellingPrice = totalCost * multiplier;
         const grossProfit = preTaxSellingPrice - totalCost;
         const taxableSellingPrice = totalTaxableCost * multiplier;
@@ -1019,22 +968,20 @@
             tally: projectTally,
             marginExpenses: marginExpenses,
             multiExpenses: multiExpenses,
-            // Margin Settings
             baseCost: document.getElementById('baseCost').value,
             margin: document.getElementById('margin').value,
             taxRate: document.getElementById('taxRate').value,
             masterTax: document.getElementById('masterTaxToggle').checked,
-            // Multi Settings
             multiBaseCost: document.getElementById('multiBaseCost').value,
             multiMultiplier: document.getElementById('multiMultiplier').value,
             multiTaxRate: document.getElementById('multiTaxRate').value,
             multiMasterTax: document.getElementById('multiMasterTaxToggle').checked
         };
-        localStorage.setItem('simplyDoorsMasterDataV2', JSON.stringify(state));
+        localStorage.setItem('simplyDoorsMasterDataV3', JSON.stringify(state));
     }
 
     function loadState() {
-        const saved = localStorage.getItem('simplyDoorsMasterDataV2');
+        const saved = localStorage.getItem('simplyDoorsMasterDataV3');
         if (saved) {
             try {
                 const state = JSON.parse(saved);
@@ -1051,9 +998,7 @@
                 document.getElementById('multiMultiplier').value = state.multiMultiplier || '';
                 document.getElementById('multiTaxRate').value = state.multiTaxRate || '8.25';
                 document.getElementById('multiMasterTaxToggle').checked = state.multiMasterTax !== false;
-            } catch (e) {
-                console.error("Failed to load saved state.");
-            }
+            } catch (e) { console.error("Failed to load saved state."); }
         }
     }
 </script>

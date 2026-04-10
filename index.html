@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SimplyDoors Master Quoting App</title>
+    <style>
+        :root {
+            --primary: #0f766e; 
+            --primary-hover: #0d9488;
+            --bg: #f1f5f9;
+            --panel-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --danger: #ef4444;
+            --success: #059669;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Navigation Tabs */
+        .top-nav {
+            width: 100%;
+            background: #1e293b;
+            display: flex;
+            justify-content: center;
+            padding: 1rem 1rem 0 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab-btn {
+            background: #334155;
+            color: #94a3b8;
+            border: none;
+            padding: 0.875rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            margin: 0 0.2rem;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .tab-btn:hover {
+            background: #475569;
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: var(--bg);
+            color: var(--primary);
+        }
+
+        /* View Containers */
+        .view-section {
+            display: none;
+            width: 100%;
+            padding: 2rem 1rem;
+            justify-content: center;
+        }
+
+        .view-section.active {
+            display: flex;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1.2fr 350px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--bg);
+            padding-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .app-header h1 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .form-group { margin-bottom: 1.25rem; position: relative; }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        input[type="number"], input[type="text"], select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fff;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+        }
+
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .prefix, .suffix { position: absolute; color: var(--text-muted); font-weight: 600; padding: 0 0.75rem; pointer-events: none; }
+        .prefix { left: 0; }
+        .suffix { right: 0; }
+        .input-wrapper.has-prefix input { padding-left: 1.75rem; }
+        .input-wrapper.has-suffix input { padding-right: 2.5rem; }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover { background: var(--primary-hover); }
+        .btn-full { width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1rem;}
+        
+        .btn-push-margin { background: #0f766e; color: #fff; }
+        .btn-push-margin:hover { background: #0d9488; }
+        
+        .btn-push-multi { background: #8b5cf6; color: #fff; }
+        .btn-push-multi:hover { background: #7c3aed; }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--danger);
+            padding: 0.25rem 0.5rem;
+            font-size: 1.25rem;
+            line-height: 1;
+            border-radius: 6px;
+        }
+        .btn-danger:hover { background: #fee2e2; }
+
+        .btn-clear { background: transparent; color: var(--text-muted); font-size: 0.875rem; padding: 0; }
+        .btn-clear:hover { color: var(--danger); text-decoration: underline; }
+
+        /* MEASUREMENT TAB SPECIFICS */
+        .measurement-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.5fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .divider::after {
+            content: "OR";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--panel-bg);
+            padding: 0 10px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .division-box {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-top: 1.5rem;
+        }
+
+        .result-display { font-size: 1.25rem; font-weight: bold; color: var(--primary); margin-top: 0.5rem; }
+        .result-sub { font-size: 0.875rem; color: var(--text-muted); }
+
+        .tally-list { display: flex; flex-direction: column; gap: 0.75rem; max-height: 400px; overflow-y: auto; margin-bottom: 1.5rem; }
+        .tally-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; }
+        .tally-desc { font-weight: 600; color: var(--text-main); }
+        .tally-val { color: var(--text-muted); font-size: 0.8rem; }
+
+        .push-action-row { display: flex; gap: 1rem; margin-top: 1rem; }
+
+        /* PRICING TABS SPECIFICS */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .switch { position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        .custom-expense-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr auto auto;
+            gap: 0.75rem;
+            align-items: center;
+            background: #f8fafc;
+            padding: 0.75rem 0.75rem 0.5rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 0.75rem;
+        }
+
+        .custom-expense-row input { padding: 0.6rem; font-size: 0.95rem; }
+        .mini-toggle-wrap { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); gap: 4px; }
+        
+        .item-summary { grid-column: 1 / -1; font-size: 0.8rem; color: var(--text-muted); text-align: right; padding-top: 0.5rem; border-top: 1px dashed var(--border); font-weight: 500; }
+        .base-summary { font-size: 0.8rem; color: var(--text-muted); text-align: right; padding-top: 0.5rem; font-weight: 500; }
+
+        /* Shared Side Panels */
+        .summary { background: var(--text-main); color: white; position: sticky; top: 5.5rem; }
+        .summary h2 { color: white; border-color: rgba(255,255,255,0.1); }
+        
+        .summary-total { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 1.25rem; font-weight: 700; color: var(--success); display: flex; flex-direction: column; gap: 0.5rem; }
+        .summary-total span { font-size: 0.9rem; color: #cbd5e1; font-weight: normal; }
+
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1rem; color: #cbd5e1; }
+        .summary-row.total { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 1.5rem; font-weight: 700; color: white; }
+        .summary-row.profit { color: var(--success); font-weight: 600; }
+        .tax-disabled { text-decoration: line-through; opacity: 0.5; }
+        .btn-copy { width: 100%; margin-top: 1.5rem; padding: 0.875rem; background: #334155; font-size: 1rem; }
+        .btn-copy:hover { background: #475569; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; gap: 1rem; }
+            .measurement-row { grid-template-columns: 1fr 1fr; }
+            .measurement-row .fraction-group { grid-column: 1 / -1; }
+            .custom-expense-row { grid-template-columns: 1fr 1fr; }
+            .custom-expense-row input.expense-name { grid-column: span 2; }
+            .mini-toggle-wrap { justify-self: center; }
+            .btn-danger { justify-self: end; }
+            .item-summary { text-align: center; }
+            .summary { position: static; margin-bottom: 2rem; }
+            .top-nav { padding: 0.5rem 0.5rem 0 0.5rem; }
+            .tab-btn { padding: 0.6rem 0.25rem; font-size: 0.8rem; }
+            .push-action-row { flex-direction: column; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <button id="tabBtnMeas" class="tab-btn active" onclick="switchTab('meas')">📏 Measurements</button>
+    <button id="tabBtnMargin" class="tab-btn" onclick="switchTab('margin')">💰 Margin (Cost)</button>
+    <button id="tabBtnMulti" class="tab-btn" onclick="switchTab('multi')">✖️ Multiplier (Retail)</button>
+</nav>
+
+<div id="viewMeas" class="view-section active">
+    <div class="container">
+        <div class="panel">
+            <div class="app-header">
+                <h1>Length Calculator</h1>
+                <button class="btn btn-clear" onclick="resetMeasApp()">Clear Meas.</button>
+            </div>
+
+            <label>Enter Feet & Inches (Tape Measure)</label>
+            <div class="measurement-row">
+                <div>
+                    <div class="input-wrapper has-suffix">
+                        <input type="number" id="inputFeet" min="0" placeholder="0" oninput="calcFromFeet()">
+                        <span class="suffix">ft</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="input-wrapper has-suffix">
+                        <input type="number" id="inputInches" min="0" max="11" placeholder="0" oninput="calcFromFeet()">
+                        <span class="suffix">in</span>
+                    </div>
+                </div>
+                <div class="fraction-group">
+                    <select id="inputFraction" onchange="calcFromFeet()">
+                        <option value="0">0</option>
+                        <option value="0.0625">1/16</option>
+                        <option value="0.125">1/8</option>
+                        <option value="0.1875">3/16</option>
+                        <option value="0.25">1/4</option>
+                        <option value="0.3125">5/16</option>
+                        <option value="0.375">3/8</option>
+                        <option value="0.4375">7/16</option>
+                        <option value="0.5">1/2</option>
+                        <option value="0.5625">9/16</option>
+                        <option value="0.625">5/8</option>
+                        <option value="0.6875">11/16</option>
+                        <option value="0.75">3/4</option>
+                        <option value="0.8125">13/16</option>
+                        <option value="0.875">7/8</option>
+                        <option value="0.9375">15/16</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="form-group">
+                <label>Total Decimal Inches</label>
+                <div class="input-wrapper has-suffix">
+                    <input type="number" id="inputTotalInches" step="0.01" min="0" placeholder="0.00" oninput="calcFromTotal()">
+                    <span class="suffix">in</span>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <div class="input-wrapper">
+                    <input type="text" id="tallyDesc" placeholder="Description (e.g., Baseboard A214)">
+                </div>
+                <button class="btn btn-full" onclick="addToTally()" style="margin-top: 0.5rem;">+ Add to Project Tally</button>
+            </div>
+
+            <div class="division-box">
+                <label>Division Tool (Split Measurement)</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: center;">
+                    <div class="input-wrapper has-suffix">
+                        <input type="number" id="divideBy" step="1" min="1" placeholder="Div. by..." oninput="calculateDivision()">
+                        <span class="suffix">parts</span>
+                    </div>
+                    <div id="divisionResult" class="result-display">
+                        0.00"
+                        <div class="result-sub" id="divisionSubResult">0' 0"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel summary">
+            <h2>Project Tally</h2>
+            <div class="tally-list" id="tallyList">
+                </div>
+            <div class="summary-total">
+                <div id="grandTotalDecimal">0.00" Total</div>
+                <span id="grandTotalFeet">0' 0" Linear</span>
+            </div>
+            
+            <div class="push-action-row">
+                <button class="btn btn-full btn-push-margin" onclick="pushToMargin()">Push to Margin Quote</button>
+                <button class="btn btn-full btn-push-multi" onclick="pushToMulti()">Push to Multiplier Quote</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="viewMargin" class="view-section">
+    <div class="container">
+        <div class="panel">
+            <div class="app-header">
+                <h1>Margin Calculator</h1>
+                <button class="btn btn-clear" onclick="resetMarginApp()">Clear Pricing</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Base Item Cost (e.g. Door Unit)</label>
+                <div class="input-wrapper has-prefix">
+                    <span class="prefix">$</span>
+                    <input type="number" id="baseCost" step="0.01" min="0" placeholder="0.00" inputmode="decimal" oninput="calculateMargin()">
+                </div>
+                <div id="baseCostSummary" class="base-summary"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Target Margin (Gross)</label>
+                <div class="input-wrapper has-suffix">
+                    <input type="number" id="margin" step="0.1" min="0" max="99.99" placeholder="0" inputmode="decimal" oninput="calculateMargin()">
+                    <span class="suffix">%</span>
+                </div>
+            </div>
+
+            <div class="toggle-container">
+                <div>
+                    <label style="margin:0;">Master Tax Settings</label>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Toggle to exempt entire quote</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="masterTaxToggle" checked onchange="calculateMargin()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="form-group" id="taxRateGroup">
+                <label>Sales Tax Rate</label>
+                <div class="input-wrapper has-suffix">
+                    <input type="number" id="taxRate" step="0.01" min="0" value="8.25" inputmode="decimal" oninput="calculateMargin()">
+                    <span class="suffix">%</span>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 2.5rem;">
+                Line Items & Materials
+                <button class="btn" onclick="addMarginExpense()">+ Add Custom</button>
+            </h2>
+            
+            <div id="marginExpensesContainer">
+                </div>
+        </div>
+
+        <div class="panel summary">
+            <h2>Grand Total Summary</h2>
+            <div class="summary-row">
+                <span>Total Cost</span>
+                <span id="displayTotalCost">$0.00</span>
+            </div>
+            <div class="summary-row profit">
+                <span>Gross Profit</span>
+                <span id="displayGrossProfit">$0.00</span>
+            </div>
+            <div class="summary-row" id="taxRow">
+                <span>Sales Tax</span>
+                <span id="displayTax">$0.00</span>
+            </div>
+            <div class="summary-row total">
+                <span>Final Selling Price</span>
+                <span id="displaySellingPrice">$0.00</span>
+            </div>
+            <button class="btn btn-copy" id="copyBtnMargin" onclick="copyToClipboard('margin')">
+                📋 Copy Quote Details
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="viewMulti" class="view-section">
+    <div class="container">
+        <div class="panel">
+            <div class="app-header">
+                <h1>Multiplier Calculator</h1>
+                <button class="btn btn-clear" onclick="resetMultiApp()">Clear Pricing</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Vendor Base Price</label>
+                <div class="input-wrapper has-prefix">
+                    <span class="prefix">$</span>
+                    <input type="number" id="multiBaseCost" step="0.01" min="0" placeholder="0.00" inputmode="decimal" oninput="calculateMulti()">
+                </div>
+                <div id="multiBaseCostSummary" class="base-summary"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Retail Multiplier (e.g. 1.5, 2.0)</label>
+                <div class="input-wrapper has-suffix">
+                    <input type="number" id="multiMultiplier" step="0.01" min="0" placeholder="1.0" inputmode="decimal" oninput="calculateMulti()">
+                    <span class="suffix">x</span>
+                </div>
+            </div>
+
+            <div class="toggle-container">
+                <div>
+                    <label style="margin:0;">Master Tax Settings</label>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Toggle to exempt entire quote</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="multiMasterTaxToggle" checked onchange="calculateMulti()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="form-group" id="multiTaxRateGroup">
+                <label>Sales Tax Rate</label>
+                <div class="input-wrapper has-suffix">
+                    <input type="number" id="multiTaxRate" step="0.01" min="0" value="8.25" inputmode="decimal" oninput="calculateMulti()">
+                    <span class="suffix">%</span>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 2.5rem;">
+                Line Items & Materials
+                <button class="btn" style="background-color: #8b5cf6;" onclick="addMultiExpense()">+ Add Custom</button>
+            </h2>
+            
+            <div id="multiExpensesContainer">
+                </div>
+        </div>
+
+        <div class="panel summary">
+            <h2>Grand Total Summary</h2>
+            <div class="summary-row">
+                <span>Total Cost</span>
+                <span id="multiTotalCost">$0.00</span>
+            </div>
+            <div class="summary-row profit">
+                <span>Gross Profit</span>
+                <span id="multiGrossProfit">$0.00</span>
+            </div>
+            <div class="summary-row" id="multiTaxRow">
+                <span>Sales Tax</span>
+                <span id="multiTax">$0.00</span>
+            </div>
+            <div class="summary-row total">
+                <span>Final Selling Price</span>
+                <span id="multiSellingPrice">$0.00</span>
+            </div>
+            <button class="btn btn-copy" id="copyBtnMulti" onclick="copyToClipboard('multi')">
+                📋 Copy Quote Details
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- GLOBAL STATE ---
+    let projectTally = [];
+    let marginExpenses = [];
+    let multiExpenses = [];
+
+    window.onload = () => {
+        loadState();
+        renderTally();
+        renderMarginExpenses();
+        renderMultiExpenses();
+        calculateMargin();
+        calculateMulti();
+    };
+
+    // --- TAB NAVIGATION ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.view-section').forEach(view => view.classList.remove('active'));
+
+        if(tabId === 'meas') {
+            document.getElementById('tabBtnMeas').classList.add('active');
+            document.getElementById('viewMeas').classList.add('active');
+        } else if(tabId === 'margin') {
+            document.getElementById('tabBtnMargin').classList.add('active');
+            document.getElementById('viewMargin').classList.add('active');
+        } else {
+            document.getElementById('tabBtnMulti').classList.add('active');
+            document.getElementById('viewMulti').classList.add('active');
+        }
+    }
+
+    // --- INTEGRATION WORKFLOW (THE PUSHES) ---
+    function pushToMargin() {
+        if(projectTally.length === 0) { alert("Your Project Tally is empty! Add some measurements first."); return; }
+
+        projectTally.forEach(item => {
+            const alreadyExists = marginExpenses.find(exp => exp.tallyId === item.id);
+            if(!alreadyExists) {
+                const lengthText = convertDecimalToFeetText(item.inches);
+                marginExpenses.push({
+                    id: 'mrg_' + Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                    tallyId: item.id,
+                    name: `${item.desc} (${lengthText})`,
+                    amount: '',
+                    isTaxable: true
+                });
+            }
+        });
+        renderMarginExpenses();
+        calculateMargin();
+        switchTab('margin');
+        saveState();
+    }
+
+    function pushToMulti() {
+        if(projectTally.length === 0) { alert("Your Project Tally is empty! Add some measurements first."); return; }
+
+        projectTally.forEach(item => {
+            const alreadyExists = multiExpenses.find(exp => exp.tallyId === item.id);
+            if(!alreadyExists) {
+                const lengthText = convertDecimalToFeetText(item.inches);
+                multiExpenses.push({
+                    id: 'mlt_' + Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                    tallyId: item.id,
+                    name: `${item.desc} (${lengthText})`,
+                    amount: '',
+                    isTaxable: true
+                });
+            }
+        });
+        renderMultiExpenses();
+        calculateMulti();
+        switchTab('multi');
+        saveState();
+    }
+
+    // ==========================================
+    // MODULE 1: LENGTH CALCULATOR LOGIC
+    // ==========================================
+    const fractionStrs = {
+        0: "0", 0.0625: "1/16", 0.125: "1/8", 0.1875: "3/16", 0.25: "1/4", 0.3125: "5/16", 0.375: "3/8", 0.4375: "7/16", 
+        0.5: "1/2", 0.5625: "9/16", 0.625: "5/8", 0.6875: "11/16", 0.75: "3/4", 0.8125: "13/16", 0.875: "7/8", 0.9375: "15/16"
+    };
+
+    function calcFromFeet() {
+        const ft = parseFloat(document.getElementById('inputFeet').value) || 0;
+        const inc = parseFloat(document.getElementById('inputInches').value) || 0;
+        const frac = parseFloat(document.getElementById('inputFraction').value) || 0;
+        const total = (ft * 12) + inc + frac;
+        document.getElementById('inputTotalInches').value = total > 0 ? parseFloat(total.toFixed(4)) : '';
+        calculateDivision();
+    }
+
+    function calcFromTotal() {
+        let total = parseFloat(document.getElementById('inputTotalInches').value) || 0;
+        let ft = Math.floor(total / 12);
+        let remInches = total % 12;
+        let wholeInches = Math.floor(remInches);
+        let fractionDecimal = remInches - wholeInches;
+        let sixteenths = Math.round(fractionDecimal * 16);
+
+        if (sixteenths >= 16) { sixteenths = 0; wholeInches += 1; }
+        if (wholeInches >= 12) { wholeInches = 0; ft += 1; }
+
+        const fracValue = sixteenths / 16;
+        document.getElementById('inputFeet').value = ft > 0 ? ft : '';
+        document.getElementById('inputInches').value = wholeInches > 0 ? wholeInches : '';
+        document.getElementById('inputFraction').value = fracValue.toString();
+        calculateDivision();
+    }
+
+    function calculateDivision() {
+        const totalInches = parseFloat(document.getElementById('inputTotalInches').value) || 0;
+        const divideBy = parseFloat(document.getElementById('divideBy').value) || 0;
+
+        if (totalInches > 0 && divideBy > 0) {
+            const splitDecimal = totalInches / divideBy;
+            document.getElementById('divisionResult').innerText = splitDecimal.toFixed(2) + '"';
+            document.getElementById('divisionSubResult').innerText = convertDecimalToFeetText(splitDecimal);
+        } else {
+            document.getElementById('divisionResult').innerText = '0.00"';
+            document.getElementById('divisionSubResult').innerText = '0\' 0"';
+        }
+    }
+
+    function convertDecimalToFeetText(total) {
+        let ft = Math.floor(total / 12);
+        let remInches = total % 12;
+        let wholeInches = Math.floor(remInches);
+        let sixteenths = Math.round((remInches - wholeInches) * 16);
+        if (sixteenths >= 16) { sixteenths = 0; wholeInches += 1; }
+        if (wholeInches >= 12) { wholeInches = 0; ft += 1; }
+
+        let fracValue = sixteenths / 16;
+        let fracStr = fractionStrs[fracValue] !== "0" ? fractionStrs[fracValue] : "";
+
+        let text = "";
+        if (ft > 0) text += `${ft}' `;
+        if (wholeInches > 0 || fracStr !== "") text += `${wholeInches}`;
+        if (fracStr !== "") text += ` ${fracStr}`;
+        if (text === "") text = "0";
+        return text.trim() + '"';
+    }
+
+    function addToTally() {
+        const totalInches = parseFloat(document.getElementById('inputTotalInches').value);
+        if (!totalInches || totalInches <= 0) return;
+
+        let desc = document.getElementById('tallyDesc').value.trim();
+        if (desc === "") desc = `Measurement ${projectTally.length + 1}`;
+
+        projectTally.push({ id: Date.now().toString(), desc: desc, inches: totalInches });
+        
+        document.getElementById('tallyDesc').value = '';
+        document.getElementById('inputFeet').value = '';
+        document.getElementById('inputInches').value = '';
+        document.getElementById('inputFraction').value = '0';
+        document.getElementById('inputTotalInches').value = '';
+        document.getElementById('divideBy').value = '';
+        calculateDivision();
+        renderTally();
+        saveState();
+    }
+
+    function removeTally(id) {
+        projectTally = projectTally.filter(item => item.id !== id);
+        renderTally();
+        saveState();
+    }
+
+    function renderTally() {
+        const list = document.getElementById('tallyList');
+        list.innerHTML = '';
+        let sumInches = 0;
+
+        projectTally.forEach(item => {
+            sumInches += item.inches;
+            const div = document.createElement('div');
+            div.className = 'tally-item';
+            div.innerHTML = `
+                <div>
+                    <div class="tally-desc">${item.desc}</div>
+                    <div class="tally-val">${item.inches.toFixed(2)}" (${convertDecimalToFeetText(item.inches)})</div>
+                </div>
+                <button class="btn-danger" onclick="removeTally('${item.id}')">&times;</button>
+            `;
+            list.appendChild(div);
+        });
+
+        document.getElementById('grandTotalDecimal').innerText = sumInches.toFixed(2) + '" Total';
+        document.getElementById('grandTotalFeet').innerText = convertDecimalToFeetText(sumInches) + " Linear";
+    }
+
+    function resetMeasApp() {
+        if(confirm('Clear measurements and project tally?')) {
+            projectTally = []; renderTally(); saveState();
+        }
+    }
+
+    // ==========================================
+    // MODULE 2: MARGIN PRICING LOGIC
+    // ==========================================
+    function addMarginExpense(name = '', amount = '', isTaxable = true) {
+        marginExpenses.push({ id: 'mrg_' + Date.now().toString(), tallyId: null, name, amount, isTaxable });
+        renderMarginExpenses();
+        calculateMargin();
+    }
+
+    function removeMarginExpense(id) {
+        marginExpenses = marginExpenses.filter(exp => exp.id !== id);
+        renderMarginExpenses();
+        calculateMargin();
+    }
+
+    function updateMarginExpense(id, field, value) {
+        const expense = marginExpenses.find(exp => exp.id === id);
+        if (expense) { expense[field] = value; calculateMargin(); }
+    }
+
+    function renderMarginExpenses() {
+        const container = document.getElementById('marginExpensesContainer');
+        container.innerHTML = '';
+        marginExpenses.forEach(exp => {
+            const row = document.createElement('div');
+            row.className = 'custom-expense-row';
+            row.innerHTML = `
+                <input type="text" placeholder="Description" class="expense-name" value="${exp.name}" oninput="updateMarginExpense('${exp.id}', 'name', this.value)">
+                <div class="input-wrapper has-prefix">
+                    <span class="prefix" style="padding: 0 0.5rem;">$</span>
+                    <input type="number" placeholder="Cost" class="expense-amount" step="0.01" min="0" inputmode="decimal" value="${exp.amount}" oninput="updateMarginExpense('${exp.id}', 'amount', this.value)">
+                </div>
+                <div class="mini-toggle-wrap">
+                    <span>Taxable?</span>
+                    <label class="switch" style="width: 34px; height: 18px;">
+                        <input type="checkbox" class="expense-taxable" ${exp.isTaxable ? 'checked' : ''} onchange="updateMarginExpense('${exp.id}', 'isTaxable', this.checked)">
+                        <span class="slider" style="border-radius: 18px;"></span>
+                    </label>
+                </div>
+                <button class="btn btn-danger" onclick="removeMarginExpense('${exp.id}')">&times;</button>
+                <div class="item-summary" id="margin-summary-${exp.id}"></div>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function calculateMargin() {
+        const baseCost = parseFloat(document.getElementById('baseCost').value) || 0;
+        const marginPercent = parseFloat(document.getElementById('margin').value) || 0;
+        const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+        const isMasterTaxOn = document.getElementById('masterTaxToggle').checked;
+
+        const taxRow = document.getElementById('taxRow');
+        const taxInputBox = document.getElementById('taxRate');
+        if (isMasterTaxOn) {
+            taxInputBox.disabled = false; taxInputBox.style.opacity = '1'; taxRow.classList.remove('tax-disabled');
+        } else {
+            taxInputBox.disabled = true; taxInputBox.style.opacity = '0.5'; taxRow.classList.add('tax-disabled');
+        }
+
+        const safeMargin = Math.min(marginPercent, 99.99); 
+        const marginMultiplier = safeMargin > 0 ? (1 / (1 - (safeMargin / 100))) : 1;
+
+        const basePreTax = baseCost * marginMultiplier;
+        const baseTaxAmount = isMasterTaxOn ? (basePreTax * (taxRate / 100)) : 0;
+        document.getElementById('baseCostSummary').innerText = baseCost > 0 ? `Selling Price: ${formatMoney(basePreTax)} (Pre-tax) | ${formatMoney(basePreTax + baseTaxAmount)} (w/ Tax)` : '';
+
+        let totalCustomCost = 0; let taxableCustomCost = 0;
+
+        marginExpenses.forEach(exp => {
+            const amount = parseFloat(exp.amount) || 0;
+            totalCustomCost += amount;
+            if (exp.isTaxable) taxableCustomCost += amount;
+
+            const itemPreTax = amount * marginMultiplier;
+            const itemTaxAmount = (isMasterTaxOn && exp.isTaxable) ? (itemPreTax * (taxRate / 100)) : 0;
+            const summaryDiv = document.getElementById(`margin-summary-${exp.id}`);
+            if (summaryDiv) {
+                summaryDiv.innerText = amount > 0 ? `Selling Price: ${formatMoney(itemPreTax)} (Pre-tax) | ${formatMoney(itemPreTax + itemTaxAmount)} (w/ Tax)` : `Cost required for selling price`;
+            }
+        });
+
+        const totalCost = baseCost + totalCustomCost;
+        const totalTaxableCost = isMasterTaxOn ? (baseCost + taxableCustomCost) : 0;
+        
+        const preTaxSellingPrice = totalCost * marginMultiplier;
+        const grossProfit = preTaxSellingPrice - totalCost;
+        const taxableSellingPrice = totalTaxableCost * marginMultiplier;
+        const taxAmount = isMasterTaxOn ? (taxableSellingPrice * (taxRate / 100)) : 0;
+        const finalSellingPrice = preTaxSellingPrice + taxAmount;
+
+        document.getElementById('displayTotalCost').innerText = formatMoney(totalCost);
+        document.getElementById('displayGrossProfit').innerText = formatMoney(grossProfit);
+        document.getElementById('displayTax').innerText = formatMoney(taxAmount);
+        document.getElementById('displaySellingPrice').innerText = formatMoney(finalSellingPrice);
+        saveState();
+    }
+
+    function resetMarginApp() {
+        if(confirm('Clear margin pricing and line items?')) {
+            document.getElementById('baseCost').value = '';
+            document.getElementById('margin').value = '';
+            document.getElementById('taxRate').value = '8.25';
+            document.getElementById('masterTaxToggle').checked = true;
+            marginExpenses = []; renderMarginExpenses(); calculateMargin(); saveState();
+        }
+    }
+
+    // ==========================================
+    // MODULE 3: MULTIPLIER PRICING LOGIC
+    // ==========================================
+    function addMultiExpense(name = '', amount = '', isTaxable = true) {
+        multiExpenses.push({ id: 'mlt_' + Date.now().toString(), tallyId: null, name, amount, isTaxable });
+        renderMultiExpenses();
+        calculateMulti();
+    }
+
+    function removeMultiExpense(id) {
+        multiExpenses = multiExpenses.filter(exp => exp.id !== id);
+        renderMultiExpenses();
+        calculateMulti();
+    }
+
+    function updateMultiExpense(id, field, value) {
+        const expense = multiExpenses.find(exp => exp.id === id);
+        if (expense) { expense[field] = value; calculateMulti(); }
+    }
+
+    function renderMultiExpenses() {
+        const container = document.getElementById('multiExpensesContainer');
+        container.innerHTML = '';
+        multiExpenses.forEach(exp => {
+            const row = document.createElement('div');
+            row.className = 'custom-expense-row';
+            row.innerHTML = `
+                <input type="text" placeholder="Description" class="expense-name" value="${exp.name}" oninput="updateMultiExpense('${exp.id}', 'name', this.value)">
+                <div class="input-wrapper has-prefix">
+                    <span class="prefix" style="padding: 0 0.5rem;">$</span>
+                    <input type="number" placeholder="Cost" class="expense-amount" step="0.01" min="0" inputmode="decimal" value="${exp.amount}" oninput="updateMultiExpense('${exp.id}', 'amount', this.value)">
+                </div>
+                <div class="mini-toggle-wrap">
+                    <span>Taxable?</span>
+                    <label class="switch" style="width: 34px; height: 18px;">
+                        <input type="checkbox" class="expense-taxable" ${exp.isTaxable ? 'checked' : ''} onchange="updateMultiExpense('${exp.id}', 'isTaxable', this.checked)">
+                        <span class="slider" style="border-radius: 18px;"></span>
+                    </label>
+                </div>
+                <button class="btn btn-danger" onclick="removeMultiExpense('${exp.id}')">&times;</button>
+                <div class="item-summary" id="multi-summary-${exp.id}"></div>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function calculateMulti() {
+        const baseCost = parseFloat(document.getElementById('multiBaseCost').value) || 0;
+        const multiplier = parseFloat(document.getElementById('multiMultiplier').value) || 1; // Default to 1.0 multiplier
+        const taxRate = parseFloat(document.getElementById('multiTaxRate').value) || 0;
+        const isMasterTaxOn = document.getElementById('multiMasterTaxToggle').checked;
+
+        const taxRow = document.getElementById('multiTaxRow');
+        const taxInputBox = document.getElementById('multiTaxRate');
+        if (isMasterTaxOn) {
+            taxInputBox.disabled = false; taxInputBox.style.opacity = '1'; taxRow.classList.remove('tax-disabled');
+        } else {
+            taxInputBox.disabled = true; taxInputBox.style.opacity = '0.5'; taxRow.classList.add('tax-disabled');
+        }
+
+        const basePreTax = baseCost * multiplier;
+        const baseTaxAmount = isMasterTaxOn ? (basePreTax * (taxRate / 100)) : 0;
+        document.getElementById('multiBaseCostSummary').innerText = baseCost > 0 ? `Selling Price: ${formatMoney(basePreTax)} (Pre-tax) | ${formatMoney(basePreTax + baseTaxAmount)} (w/ Tax)` : '';
+
+        let totalCustomCost = 0; let taxableCustomCost = 0;
+
+        multiExpenses.forEach(exp => {
+            const amount = parseFloat(exp.amount) || 0;
+            totalCustomCost += amount;
+            if (exp.isTaxable) taxableCustomCost += amount;
+
+            const itemPreTax = amount * multiplier;
+            const itemTaxAmount = (isMasterTaxOn && exp.isTaxable) ? (itemPreTax * (taxRate / 100)) : 0;
+            const summaryDiv = document.getElementById(`multi-summary-${exp.id}`);
+            if (summaryDiv) {
+                summaryDiv.innerText = amount > 0 ? `Selling Price: ${formatMoney(itemPreTax)} (Pre-tax) | ${formatMoney(itemPreTax + itemTaxAmount)} (w/ Tax)` : `Cost required for selling price`;
+            }
+        });
+
+        const totalCost = baseCost + totalCustomCost;
+        const totalTaxableCost = isMasterTaxOn ? (baseCost + taxableCustomCost) : 0;
+        
+        const preTaxSellingPrice = totalCost * multiplier;
+        const grossProfit = preTaxSellingPrice - totalCost;
+        const taxableSellingPrice = totalTaxableCost * multiplier;
+        const taxAmount = isMasterTaxOn ? (taxableSellingPrice * (taxRate / 100)) : 0;
+        const finalSellingPrice = preTaxSellingPrice + taxAmount;
+
+        document.getElementById('multiTotalCost').innerText = formatMoney(totalCost);
+        document.getElementById('multiGrossProfit').innerText = formatMoney(grossProfit);
+        document.getElementById('multiTax').innerText = formatMoney(taxAmount);
+        document.getElementById('multiSellingPrice').innerText = formatMoney(finalSellingPrice);
+        saveState();
+    }
+
+    function resetMultiApp() {
+        if(confirm('Clear multiplier pricing and line items?')) {
+            document.getElementById('multiBaseCost').value = '';
+            document.getElementById('multiMultiplier').value = '';
+            document.getElementById('multiTaxRate').value = '8.25';
+            document.getElementById('multiMasterTaxToggle').checked = true;
+            multiExpenses = []; renderMultiExpenses(); calculateMulti(); saveState();
+        }
+    }
+
+    // ==========================================
+    // SHARED UTILITIES
+    // ==========================================
+    function formatMoney(amount) {
+        return '$' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function copyToClipboard(type) {
+        let cost, profit, tax, final, btnId;
+        if(type === 'margin') {
+            cost = document.getElementById('displayTotalCost').innerText;
+            profit = document.getElementById('displayGrossProfit').innerText;
+            tax = document.getElementById('displayTax').innerText;
+            final = document.getElementById('displaySellingPrice').innerText;
+            btnId = 'copyBtnMargin';
+        } else {
+            cost = document.getElementById('multiTotalCost').innerText;
+            profit = document.getElementById('multiGrossProfit').innerText;
+            tax = document.getElementById('multiTax').innerText;
+            final = document.getElementById('multiSellingPrice').innerText;
+            btnId = 'copyBtnMulti';
+        }
+        
+        let text = `Quote Breakdown:\n-----------------\nTotal Cost:   ${cost}\nGross Profit: ${profit}\nSales Tax:    ${tax}\n-----------------\nFINAL PRICE:  ${final}\n`;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.getElementById(btnId);
+            const orig = btn.innerText;
+            btn.innerText = '✅ Copied!';
+            btn.style.background = 'var(--success)';
+            setTimeout(() => { btn.innerText = orig; btn.style.background = '#334155'; }, 2000);
+        });
+    }
+
+    function saveState() {
+        const state = {
+            tally: projectTally,
+            marginExpenses: marginExpenses,
+            multiExpenses: multiExpenses,
+            // Margin Settings
+            baseCost: document.getElementById('baseCost').value,
+            margin: document.getElementById('margin').value,
+            taxRate: document.getElementById('taxRate').value,
+            masterTax: document.getElementById('masterTaxToggle').checked,
+            // Multi Settings
+            multiBaseCost: document.getElementById('multiBaseCost').value,
+            multiMultiplier: document.getElementById('multiMultiplier').value,
+            multiTaxRate: document.getElementById('multiTaxRate').value,
+            multiMasterTax: document.getElementById('multiMasterTaxToggle').checked
+        };
+        localStorage.setItem('simplyDoorsMasterDataV2', JSON.stringify(state));
+    }
+
+    function loadState() {
+        const saved = localStorage.getItem('simplyDoorsMasterDataV2');
+        if (saved) {
+            try {
+                const state = JSON.parse(saved);
+                projectTally = state.tally || [];
+                marginExpenses = state.marginExpenses || [];
+                multiExpenses = state.multiExpenses || [];
+                
+                document.getElementById('baseCost').value = state.baseCost || '';
+                document.getElementById('margin').value = state.margin || '';
+                document.getElementById('taxRate').value = state.taxRate || '8.25';
+                document.getElementById('masterTaxToggle').checked = state.masterTax !== false;
+
+                document.getElementById('multiBaseCost').value = state.multiBaseCost || '';
+                document.getElementById('multiMultiplier').value = state.multiMultiplier || '';
+                document.getElementById('multiTaxRate').value = state.multiTaxRate || '8.25';
+                document.getElementById('multiMasterTaxToggle').checked = state.multiMasterTax !== false;
+            } catch (e) {
+                console.error("Failed to load saved state.");
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
